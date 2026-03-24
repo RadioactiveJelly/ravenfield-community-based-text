@@ -45,21 +45,101 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mutators:
   - name: Community Based Text
-    description: 1.0.0
-    menuImage: {fileID: 0}
+    description: 1.0.1
+    menuImage: {fileID: 2800000, guid: c12c9611250bfdb4a81538df359bd2ce, type: 3}
     mutatorPrefab: {fileID: 1461547612745371855, guid: 7b36009382da3e24c965cac9a586ee1f, type: 3}
     configuration:
       labels: []
       integers: []
       floats: []
-      ranges: []
+      ranges:
+      - id: OnKillEnemyChance
+        displayName: On Kill Enemy Chance
+        orderPriority: 10
+        value:
+          value: 25
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnKillFriendlyChance
+        displayName: On Kill Friendly Chance
+        orderPriority: 20
+        value:
+          value: 25
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnKilledByEnemyChance
+        displayName: On Killed By Enemy Chance
+        orderPriority: 30
+        value:
+          value: 30
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnKilledByFriendlyChance
+        displayName: On Killed By Friendly Chance
+        orderPriority: 40
+        value:
+          value: 60
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnMatchBeginChance
+        displayName: On Match Begin Chance
+        orderPriority: 50
+        value:
+          value: 40
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnVictoryChance
+        displayName: On Victory Chance
+        orderPriority: 60
+        value:
+          value: 60
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnDefeatChance
+        displayName: On Defeat Chance
+        orderPriority: 70
+        value:
+          value: 60
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnAttackPointChance
+        displayName: On Attack Point Chance
+        orderPriority: 80
+        value:
+          value: 10
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnDefendPointChance
+        displayName: On Defend Point Chance
+        orderPriority: 90
+        value:
+          value: 10
+          min: 0
+          max: 100
+          wholeNumbers: 1
+      - id: OnRoamPointChance
+        displayName: On Roam Point chance
+        orderPriority: 100
+        value:
+          value: 5
+          min: 0
+          max: 100
+          wholeNumbers: 1
       strings: []
       bools: []
       dropdowns: []
-  - name: Test Line Pack
+  - name: Vanilla Style Line Pack
     description: 1.0.0
-    menuImage: {fileID: 0}
-    mutatorPrefab: {fileID: 6159078584946115247, guid: 30f19af6fed4e4c4980f4680f5c42868, type: 3}
+    menuImage: {fileID: 2800000, guid: 2b057222932d47641aa5a00acd83bf54, type: 3}
+    mutatorPrefab: {fileID: 1599890428706028861, guid: 7cc2849af8ecf714dabb64a81136e76e, type: 3}
     configuration:
       labels: []
       integers: []

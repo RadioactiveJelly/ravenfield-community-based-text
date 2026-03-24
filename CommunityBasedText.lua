@@ -14,11 +14,26 @@ function CommunityBasedText:Awake()
 	self.onKillFriendlyLines = {}
 	self.onKilledByEnemyLines = {}
 	self.onKilledByFriendlyLines = {}
+	self.onAttackCapturePointLines = {}
+	self.onDefendCapturePointLines = {}
+	self.onRoamCapturePointLines = {}
 
-	self.onKillEnemyChance = 0.5
-	self.onKillFriendlyChance = 0.5
-	self.onKilledByEnemyChance = 0.5
-	self.onKilledByFriendlyChance = 0.5
+
+	self.onKillEnemyChance = self.script.mutator.GetConfigurationRange("OnKillEnemyChance")/100
+	self.onKillFriendlyChance = self.script.mutator.GetConfigurationRange("OnKillFriendlyChance")/100
+	self.onKilledByEnemyChance = self.script.mutator.GetConfigurationRange("OnKilledByEnemyChance")/100
+	self.onKilledByFriendlyChance = self.script.mutator.GetConfigurationRange("OnKilledByFriendlyChance")/100
+
+	self.onMatchBeginChance = self.script.mutator.GetConfigurationRange("OnMatchBeginChance")/100
+	self.onVictoryChance = self.script.mutator.GetConfigurationRange("OnVictoryChance")/100
+	self.onDefeatChance = self.script.mutator.GetConfigurationRange("OnDefeatChance")/100
+
+	self.onAttackChance = self.script.mutator.GetConfigurationRange("OnAttackPointChance")/100
+	self.onDefendChance = self.script.mutator.GetConfigurationRange("OnDefendPointChance")/100
+	self.onRoamChance = self.script.mutator.GetConfigurationRange("OnRoamPointChance")/100
+
+	self.delay = 0.5
+	self.delayVariance = 0.5
 
 	self.maxLines = 10
 	self.lines = {}
@@ -31,17 +46,10 @@ function CommunityBasedText:Awake()
 	GameEvents.onMatchEnd.AddListener(self,"OnMatchEnd")
 	GameEvents.onActorDiedInfo.AddListener(self,"OnActorDied")
 	GameEvents.onActorSpawn.AddListener(self,"OnActorSpawn")
+	GameEvents.onSquadAssignedNewOrder.AddListener(self, "OnSquadAssignedNewOrder");
 
 	self.hasSpawned = false
-end
-
-function CommunityBasedText:Update()
-	if Input.GetKeyDown(KeyCode.T) then
-		local team = Player.actor.team
-
-		self.script.StartCoroutine(self:SequentialTextSequence(team, self.onVictoryLines))
-		self.script.StartCoroutine(self:SequentialTextSequence(opposite_team[team], self.onDefeatLines))
-	end
+	self.isMatchDone = false
 end
 
 function CommunityBasedText:OnActorDied(actor, damageInfo, isSilentKill)
@@ -49,38 +57,37 @@ function CommunityBasedText:OnActorDied(actor, damageInfo, isSilentKill)
 	if damageInfo.sourceActor == nil then return end
 
 	if not actor.isPlayer then
-		local line = ""
-		local messages = {}
 		if actor.team ~= damageInfo.sourceActor.team and RandomChance(self.onKilledByEnemyChance) then
-			self:GetAndPushLine(actor,damageInfo.sourceActor,self.onKilledByEnemyLines)
+			self.script.StartCoroutine(self:GetAndPushLineAfterDelay(actor,damageInfo.sourceActor,self.onKilledByEnemyLines))
 		elseif actor.team == damageInfo.sourceActor.team and RandomChance(self.onKilledByFriendlyChance) then
-			self:GetAndPushLine(actor,damageInfo.sourceActor,self.onKilledByFriendlyLines)
+			self.script.StartCoroutine(self:GetAndPushLineAfterDelay(actor,damageInfo.sourceActor,self.onKilledByFriendlyLines))
 		end
 	end
 
 	if not damageInfo.sourceActor.isPlayer then
-		local line = ""
-		local messages = {}
 		if actor.team ~= damageInfo.sourceActor.team and RandomChance(self.onKillEnemyChance) then
-			self:GetAndPushLine(damageInfo.sourceActor,actor,self.onKillEnemyLines)
+			self.script.StartCoroutine(self:GetAndPushLineAfterDelay(damageInfo.sourceActor,actor,self.onKillEnemyLines))
 		elseif actor.team == damageInfo.sourceActor.team and RandomChance(self.onKillFriendlyChance) then
-			self:GetAndPushLine(damageInfo.sourceActor,actor,self.onKillFriendlyLines)
+			self.script.StartCoroutine(self:GetAndPushLineAfterDelay(damageInfo.sourceActor,actor,self.onKillFriendlyLines))
 		end
 		
 	end
 end
 
 function CommunityBasedText:OnMatchEnd(team)
-	self.script.StartCoroutine(self:SequentialTextSequence(team, self.onVictoryLines))
-	self.script.StartCoroutine(self:SequentialTextSequence(opposite_team[team], self.onDefeatLines))
+	self.script.StartCoroutine(self:SequentialTextSequence(team, self.onVictoryLines,self.onVictoryChance))
+	self.script.StartCoroutine(self:SequentialTextSequence(opposite_team[team], self.onDefeatLines,self.onDefeatChance))
+
+	self.isMatchDone = true
 end
 
 function CommunityBasedText:OnActorSpawn(actor)
-	if(actor == Player.actor) and not self.hasSpawned then
-		self.hasSpawned = true
-		self.script.StartCoroutine(self:SequentialTextSequence(Team.Blue, self.onMatchBeginLines))
-		self.script.StartCoroutine(self:SequentialTextSequence(Team.Red, self.onMatchBeginLines))
-	end
+	if self.hasSpawned then return end
+
+	self.script.StartCoroutine(self:SequentialTextSequence(Team.Blue, self.onMatchBeginLines, self.onMatchBeginChance))
+	self.script.StartCoroutine(self:SequentialTextSequence(Team.Red, self.onMatchBeginLines, self.onMatchBeginChance))
+	
+	self.hasSpawned = true
 end
 
 
@@ -128,6 +135,49 @@ function CommunityBasedText:UpdateText()
 	self.targets.ChatBox.text = finalString
 end
 
+function CommunityBasedText:OnSquadAssignedNewOrder(squad, order)
+	if Player.actor and Player.actor.team ~= squad.leader.team then
+		return
+	end
+
+	if self.isMatchDone then return end
+
+	local chance = 0
+	local messages = nil
+	if order.type == OrderType.Attack then
+		chance = self.onAttackChance
+		messages = self.onAttackCapturePointLines
+	elseif order.type == OrderType.Defend then
+		chance = self.onDefendChance
+		messages = self.onDefendCapturePointLines
+	elseif order.type == OrderType.Roam then
+		chance = self.onRoamChance
+		messages = self.onRoamCapturePointLines
+	else
+		return
+	end
+
+	if not RandomChance(chance) then
+		return
+	end
+
+	if messages == nil then return end
+	if #messages < 1 then return end
+
+	local sourceActor = squad.leader;
+	local memberCount = #squad.members;
+	if squad.hasPlayerLeader then
+		if(memberCount == 1) then
+			return
+		else
+			sourceActor = squad.members[2]
+			memberCount = memberCount - 1;
+		end
+	end
+
+	self:GetAndPushLine(sourceActor, order.targetPoint, messages)
+end
+
 function CommunityBasedText:AddLinePack(linePack)
 	for i, line in ipairs(linePack.onMatchBeginLines) do
 		table.insert(self.onMatchBeginLines, line)
@@ -156,12 +206,26 @@ function CommunityBasedText:AddLinePack(linePack)
 	for i, line in ipairs(linePack.onKilledByFriendlyLines) do
 		table.insert(self.onKilledByFriendlyLines, line)
 	end
+
+	for i, line in ipairs(linePack.onAttackCapturePointLines) do
+		table.insert(self.onAttackCapturePointLines, line)
+	end
+
+	for i, line in ipairs(linePack.onDefendCapturePointLines) do
+		table.insert(self.onDefendCapturePointLines, line)
+	end
+
+	for i, line in ipairs(linePack.onRoamCapturePointLines) do
+		table.insert(self.onRoamCapturePointLines, line)
+	end
 end
 
 
-function CommunityBasedText:PushMessageAfterDelay(from, message, delay)
-	coroutine.yield(WaitForSeconds(delay))
-	self:PushMessage(from, message)
+function CommunityBasedText:GetAndPushLineAfterDelay(speaker, target, messages)
+	return function()
+		coroutine.yield(WaitForSeconds(self.delay + math.random() * self.delayVariance))
+		self:GetAndPushLine(speaker,target,messages)
+	end
 end
 
 function CommunityBasedText:FormatActorName(actor)
@@ -172,7 +236,7 @@ function RandomChance(chance)
 	return math.random() < chance
 end
 
-function CommunityBasedText:SequentialTextSequence(team, messages)
+function CommunityBasedText:SequentialTextSequence(team, messages, chance)
 	return function()
 		local baseInterval = 0.5
 		local intervalVariance = 0.5
@@ -187,7 +251,9 @@ function CommunityBasedText:SequentialTextSequence(team, messages)
 					coroutine.yield(nil)
 				end
 				intervalTimer = 0
-				self:GetAndPushLine(actor, nil, messages)
+				if RandomChance(chance) then
+					self:GetAndPushLine(actor, nil, messages)
+				end
 			end
 			coroutine.yield(nil)
 		end

@@ -28,7 +28,6 @@ Transform:
   m_LocalPosition: {x: 960, y: 535.85, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 6581418768114401138}
   - {fileID: 7169141686470988635}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,78 +49,6 @@ MonoBehaviour:
   targets:
   - name: ChatBox
     value: {fileID: 4262213455313425504}
-  - name: ColorData
-    value: {fileID: 193117348656999286}
---- !u!1 &2727231723396080747
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6581418768114401138}
-  - component: {fileID: 193117348656999286}
-  m_Layer: 0
-  m_Name: ColorData
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6581418768114401138
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727231723396080747}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -69.52118, y: -41.05252, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1461547612745371854}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &193117348656999286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727231723396080747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a53a71c6a7b01e1449208c55b04f1aa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bools: []
-  ints: []
-  floats: []
-  strings:
-  - id: blueTeamHex
-    value: '#009BFF'
-  - id: redTeamHex
-    value: '#F64B00'
-  vectors: []
-  rotations: []
-  colors:
-  - id: blueTeamColor
-    value: {r: 0, g: 0.60784316, b: 1, a: 1}
-  - id: redTeamColor
-    value: {r: 0.9647059, g: 0.29411766, b: 0, a: 1}
-  - id: neutral
-    value: {r: 0.4901961, g: 0.4901961, b: 0.4901961, a: 1}
-  gradients: []
-  textures: []
-  sprites: []
-  audioClips: []
-  materials: []
-  animationCurves: []
-  fonts: []
-  gameObjects: []
-  skins: []
-  weaponEntries: []
 --- !u!1 &7436299265337942487
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +122,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 6
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -217,8 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 1.5, y: -1.5}
   m_UseGraphicAlpha: 1
 --- !u!1 &8941511687415449108
 GameObject:
@@ -252,7 +179,7 @@ RectTransform:
   m_Children:
   - {fileID: 6722336837946734301}
   m_Father: {fileID: 1461547612745371854}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -379,7 +306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.27058825}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
