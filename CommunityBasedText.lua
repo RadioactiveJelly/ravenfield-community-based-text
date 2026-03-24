@@ -1,7 +1,6 @@
 -- Register the behaviour
 behaviour("CommunityBasedText")
 
-get_team_color = {[Team.Blue] = "#009BFF", [Team.Red] = "#F64B00"}
 opposite_team = {[Team.Blue] = Team.Red, [Team.Red] = Team.Blue}
 
 function CommunityBasedText:Awake()
@@ -229,7 +228,7 @@ function CommunityBasedText:GetAndPushLineAfterDelay(speaker, target, messages)
 end
 
 function CommunityBasedText:FormatActorName(actor)
-	return "<color=" .. get_team_color[actor.team] .. ">" .. actor.name .. "</color>"
+	return ColorScheme.FormatTeamColor(actor.name, actor.team, ColorVariant.Bright)
 end
 
 function RandomChance(chance)
